@@ -67,3 +67,8 @@ variable "bucket_names_set" {
   type        = set(string)
   default     = ["hari-devops-lab-20261116-001","hari-devops-lab-20261116-002","hari-devops-lab-20261116-003"]
 }
+variable "version_number" {
+  description = "Version number for deployment"
+  type        = list(string)
+  default     = ["v1","v2","v3"]
+}

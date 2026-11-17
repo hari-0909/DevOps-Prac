@@ -40,3 +40,34 @@ resource "aws_autoscaling_group" "app_servers" {
      ]
   }
 }
+# lifecycle block with replace_triggered_by
+resource "terraform_data" "deployment_version" {
+  input = var.version_number[0]
+}
+
+resource "aws_instance" "my_instance" {
+  ami           = "ami-0ff8a91507f77f867"
+  instance_type = var.allowed_vm_types[0]
+
+  lifecycle {
+    replace_triggered_by = [
+      terraform_data.deployment_version
+    ]
+  }
+}
+# precondition and postcondition block
+resource "aws_s3_bucket" "compliance_bucket" {
+  bucket = "compliance-bucket-${var.environment}-${var.region}"
+  tags=var.tags
+
+  lifecycle {
+    precondition {
+      condition     = contains(keys(var.tags), "Compliance")
+      error_message = "ERROR: Bucket must have a 'Compliance' tag to be created."
+    }
+    postcondition{
+      condition = self.tags["Compliance"]=="required"
+      error_message="ERROR: Bucket must have compliance tag set to required."
+    }
+  }
+}
