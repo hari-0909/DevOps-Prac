@@ -8,3 +8,4 @@ django-notes-app/data/
 django-notes-app/db.sqlite3
 django-notes-app/mynotes/build/
 django-notes-app/staticfiles/
+.DS_Store
